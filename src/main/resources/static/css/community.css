@@ -9,3 +9,8 @@ body{
     margin-bottom: 15px;
     float: right;
 }
+.text-desc{
+    font-size: 12px;
+    font-weight: normal;
+    color: #991b1a;
+}
