@@ -5,6 +5,7 @@ import life.majiang.community.community.model.User;
 import life.majiang.community.community.provider.GithubProvider;
 import life.majiang.community.community.dto.AcceeTokenDTO;
 import life.majiang.community.community.dto.GithubUser;
+import life.majiang.community.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -18,11 +19,13 @@ import java.util.UUID;
 
 @Controller
 public class AuthorizeController {
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private GithubProvider githubProvider;
-    @Autowired
-    private UserMapper userMapper;
+
+
 
     @Value("${github.client.id}")
     private String clientId;
@@ -53,10 +56,8 @@ public class AuthorizeController {
             user.setToken(token);
             user.setName(githubUser.getName());
             user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatar_url());
-            userMapper.insert(user);
+            userService.createOrupdate(user);
             response.addCookie(new Cookie("token",token));
             System.out.println("登录成功");
             return "redirect:/";
@@ -66,5 +67,13 @@ public class AuthorizeController {
             return "redirect:/";
             //登录失败，重新登录
         }
+    }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie=new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 }
