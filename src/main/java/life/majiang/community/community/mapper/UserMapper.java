@@ -13,7 +13,7 @@ public interface UserMapper {
 
     @Select("select * from user where id = #{id}")
     User findById(@Param("id")Integer creator);
-    @Select("select * from user where id = #{accountId}")
+    @Select("select * from user where account_id = #{accountId}")
     User findByAccountId(@Param("accountId") String accountId);
 
 
